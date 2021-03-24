@@ -3,14 +3,14 @@ const url = require('url');
 const mysql = require("mysql");
 const express = require('express');
 const app = express();
-const hostname = 'bowenxue.net/COMP351/individualProject'
+const hostname = '/COMP351/individualProject'
 const PORT = process.env.PORT || 8888;
 
 const con = mysql.createConnection({
     host: "localhost",
-    user: "root",
-    password: "",
-    database: "webdev"
+    user: "bowenxue_nodemysql",
+    password: "nodemysql123",
+    database: "bowenxue_nodemysql"
 });
 
 app.use(function(req,res,next){
@@ -21,7 +21,7 @@ app.use(function(req,res,next){
 });
 
 
-app.post("/API/v1/updateOne/",(req,res) => {
+app.post(hostname+"/API/v1/updateOne/",(req,res) => {
     const q = url.parse(req.url, true);
     const qdata = q.query;
     let questionID = qdata.questionID;
@@ -36,7 +36,7 @@ app.post("/API/v1/updateOne/",(req,res) => {
     });   
 });
 
-app.post("/API/v1/deleteOne/",(req,res) => {
+app.post(hostname+"/API/v1/deleteOne/",(req,res) => {
     const q = url.parse(req.url, true);
     const qdata = q.query;
     let questionID = qdata.questionID;    
@@ -48,7 +48,7 @@ app.post("/API/v1/deleteOne/",(req,res) => {
     });   
 });
 
-app.post("/API/v1/addOne/",(req,res) => {     
+app.post(hostname+"/API/v1/addOne/",(req,res) => {     
     let sql = `INSERT INTO quiz (content) values (?)`;
     let data = [""];
     con.query(sql, data, function (err, result) {
@@ -57,7 +57,7 @@ app.post("/API/v1/addOne/",(req,res) => {
     });   
 });
 
-app.get("/API/v1/get-admin-contents/",(req,res) => {
+app.get(hostname+"/API/v1/get-admin-contents/",(req,res) => {
     let sql = `SELECT * FROM quiz WHERE 1`;
     /*
 
@@ -71,7 +71,7 @@ app.get("/API/v1/get-admin-contents/",(req,res) => {
         for(let i=0;i<result.length; i++){
             countArray.push(result[i].questionID)
             word += "<textarea id='"+result[i].questionID+"'>"+ result[i].content+"</textarea>"
-            +"<button onclick='save("+result[i].questionID+")'>Update in DB</button>"+
+            +"<button class='save' onclick='save("+result[i].questionID+")'>Update in DB</button>"+
             "<button class='delete' onclick='deleteOne("+result[i].questionID+")'>Delete</button>"+"<br> <hr>";
         }
         let word1='';
@@ -81,12 +81,12 @@ app.get("/API/v1/get-admin-contents/",(req,res) => {
         }
         /* word1 = "save(questionID1);save(questionID2);..." */
         let word11 = word1 + "setTimeout(function() { location.reload(); }, 100);";
-        let postAll = "<button onclick = '" + word11 +"'> Save and replace DB</button>"
+        let postAll = "<button class='save' onclick = '" + word11 +"'> Save and replace DB</button>"
         res.end(word+postAll);
         
     });
 });
-app.get("/API/v1/get-reader-contents/",(req,res) => {
+app.get(hostname+"/API/v1/get-reader-contents/",(req,res) => {
     let sql = `SELECT * FROM quiz WHERE 1`;
     con.query(sql, function(err,result){
         if(err) throw err;

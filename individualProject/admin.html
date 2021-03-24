@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>admin</title>
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+        <h1>Quote Admin Page</h1>
+        <div id="start1"></div>
+            
+        <button class="add" onclick="addOne()">Add new quote</button><br>
+        <button onclick="document.location='index.html'">HOME PAGE</button>
+        <button onclick="document.location='user.html'">User Page</button>
+        <script>
+            var src = "http://bowenxue.net/COMP351/individualProject";
+           
+            
+            function main(){
+                getContents();                
+            }
+
+            function getContents(){
+                const xhttp = new XMLHttpRequest();
+                xhttp.open("GET", src + "/API/v1/get-admin-contents/",true);
+                xhttp.send();
+                xhttp.onreadystatechange = function(){
+                    if(this.readyState == 4 && this.status == 200){
+                        
+                        document.getElementById('start1').innerHTML=(this.responseText) ;
+                        
+                        
+                    }
+                };
+               
+            };
+
+            function save(i){
+                let questionID = i;
+                let qInput = document.getElementById(i).value;     
+                                                   
+                let data = "?questionID="+questionID+"&content="+ qInput;   
+                console.log(data);                  
+                updateOneData(data);
+            }            
+            
+            function updateOneData(data){                
+                const xhttp = new XMLHttpRequest();
+                xhttp.open("POST",src+"/API/v1/updateOne/" + data,true);     
+                xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded")           
+                xhttp.send();
+                xhttp.onreadystatechange = function(){                    
+                    if(this.readyState == 4 && this.status == 200){                        
+                        document.getElementById("demo1").innerHTML = this.responseText;
+                    }                    
+                };
+            }
+
+            function addOne(){
+                const xhttp = new XMLHttpRequest();
+                xhttp.open("POST",src + "/API/v1/addOne/",true);     
+                xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded")           
+                xhttp.send();
+                xhttp.onreadystatechange = function(){                    
+                    if(this.readyState == 4 && this.status == 200){                        
+                        document.getElementById("demo1").innerHTML = this.responseText;
+                    }                    
+                };
+                getContents();
+            };
+            
+            function deleteOne(i){
+                let questionID = i;
+                let data = "?questionID=" + questionID;
+                const xhttp = new XMLHttpRequest();
+                xhttp.open("POST",src + "/API/v1/deleteOne/" + data,true);     
+                xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded")           
+                xhttp.send();
+                xhttp.onreadystatechange = function(){                    
+                    if(this.readyState == 4 && this.status == 200){                        
+                        document.getElementById("demo1").innerHTML = this.responseText;
+                    }                    
+                };
+                getContents();
+            };
+            window.onload=main();
+        </script>
+    </body>
+</html>

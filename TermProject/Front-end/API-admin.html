@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+        <h1>API Admin Page</h1>
+        
+        <table style="width: 50%;">
+                <tr>
+                    <th>Method</th>
+                    <th>EndPoint</th>
+                    <th>Requests</th>
+                </tr>
+                <tr>
+                    <th id="putM"></th>
+                    <th id="putE"></th>
+                    <th id="putR"></th>
+                </tr>
+                <tr>
+                    <th id="get1M"></th>
+                    <th id="get1E"></th>
+                    <th id="get1R"></th>
+                </tr>
+                <tr>
+                    <th id="get2M"></th>
+                    <th id="get2E"></th>
+                    <th id="get2R"></th>
+                </tr>
+
+                <tr>
+                    <th id="postM"></th>
+                    <th id="postE"></th>
+                    <th id="postR"></th>
+                </tr>
+                
+                <tr>
+                    <th id="deleteM"></th>
+                    <th id="deleteE"></th>
+                    <th id="deleteR"></th>
+                </tr>
+            </table>    
+            
+            <button onclick="document.location='admin.html'">Admin Page</button>
+            <button onclick="document.location='reader.html'">User Page</button>
+            <button onclick="document.location='index.html'">Home Page</button>
+        <script>
+            const src = "https://bowenxue.net/COMP351/Term_Project"
+            window.onload=main();
+            
+            function main(){
+                getUserContents();
+                
+            }
+            function getUserContents(){
+                const xhttp = new XMLHttpRequest();
+                xhttp.open("GET",src+"/API/v1/apis/",true);
+                xhttp.send();
+                xhttp.onreadystatechange = function(){
+                    if(this.readyState == 4 && this.status == 200){
+                        let data = JSON.parse(this.responseText);
+                        let putObj = JSON.parse(data.putObj);
+                        let getObj1 = JSON.parse(data.getObj1);
+                        let getObj2 = JSON.parse(data.getObj2);
+                        let postObj = JSON.parse(data.postObj);
+                        let deleteObj = JSON.parse(data.deleteObj);
+                        console.log(putObj.method)
+                        document.getElementById('putM').innerHTML=(putObj.method);
+                        document.getElementById('putE').innerHTML=(putObj.Endpoint);
+                        document.getElementById('putR').innerHTML=(putObj.Requests);
+
+                        document.getElementById('get1M').innerHTML=(getObj1.method);
+                        document.getElementById('get1E').innerHTML=(getObj1.Endpoint);
+                        document.getElementById('get1R').innerHTML=(getObj1.Requests);
+
+                        document.getElementById('get2M').innerHTML=(getObj2.method);
+                        document.getElementById('get2E').innerHTML=(getObj2.Endpoint);
+                        document.getElementById('get2R').innerHTML=(getObj2.Requests);
+
+                        document.getElementById('postM').innerHTML=(postObj.method);
+                        document.getElementById('postE').innerHTML=(postObj.Endpoint);
+                        document.getElementById('postR').innerHTML=(postObj.Requests);
+
+                        document.getElementById('deleteM').innerHTML=(deleteObj.method);
+                        document.getElementById('deleteE').innerHTML=(deleteObj.Endpoint);
+                        document.getElementById('deleteR').innerHTML=(deleteObj.Requests);
+
+
+                    }
+                };
+               
+            };      
+           
+
+        </script>
+    </body>
+</html>

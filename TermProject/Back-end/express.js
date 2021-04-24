@@ -74,49 +74,24 @@ app.post("/API/v1/quotes",(req,res) => {
 
 app.get("/API/v1/quotes/",(req,res) => {
     getRequet1 +=1;
-    let sql = `SELECT * FROM quiz WHERE 1`;
+    let sql = `SELECT questionID,content FROM quiz WHERE 1`;
    
     con.query(sql, function(err,result){
         if(err) throw err;
-        let word = '';
-        let countArray=[];
-        for(let i=0;i<result.length; i++){
-            countArray.push(result[i].questionID)
-            word += "<textarea id='"+result[i].questionID+"'>"+ result[i].content+"</textarea>"
-            +"<button onclick='save("+result[i].questionID+")'>Update in DB</button>"+
-            "<button class='delete' onclick='deleteOne("+result[i].questionID+")'>Delete</button>"+"<br> <hr>";
-        }
-        let word1='';
-        /* [questionID1,questionID2, questionID3] */
-        for(let i=0; i<countArray.length;i++){
-            word1 += "save(" + countArray[i] + ");"
-        }
-        /* word1 = "save(questionID1);save(questionID2);..." */
-        let word11 = word1 + "setTimeout(function() { location.reload(); }, 100);";
-        let postAll = "<button onclick = '" + word11 +"'> Save and replace DB</button>"
-        res.status(200).end(word+postAll);
+        console.log(result)
+        res.end(JSON.stringify(result));
+        
         
     });
 });
-app.get("/API/v1/reader-quotes/",(req,res) => {
-    getRequest2 +=1;
-    let sql = `SELECT * FROM quiz WHERE 1`;
-    con.query(sql, function(err,result){
-        if(err) throw err;
-        let word = '';
-        for(i=0;i<result.length; i++){
-            word += "<textarea readOnly = true id='"+result[i].questionID+"'>"+ result[i].content+"</textarea> <hr>"
-            +"<br>";
-        }
-        res.send(word);        
-    });
-});
+
 
 app.get("/API/v1/apis/",(req,res)=>{
     let apis = {};
+    getRequest2 +=1;
     let putObj = JSON.stringify({method:"PUT",Endpoint:"/API/v1/quotes/:id",Requests:putRequest});
     let getObj1 =  JSON.stringify({method:"GET",Endpoint:"/API/v1/quotes",Requests:getRequet1});
-    let getObj2 =  JSON.stringify({method:"GET",Endpoint:"/API/v1/reader-contents",Requests:getRequest2});
+    let getObj2 =  JSON.stringify({method:"GET",Endpoint:"/API/v1/apis",Requests:getRequest2});
     let postObj =  JSON.stringify({method:"POST",Endpoint:"/API/v1/quotes",Requests:postRequest});
     let deleteObj =  JSON.stringify({method:"DELETE",Endpoint:"/API/v1/quotes/:id",Requests:deleteRequest});
 

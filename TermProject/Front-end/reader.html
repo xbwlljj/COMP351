@@ -9,7 +9,7 @@
             
         <button onclick="document.location='index.html'">HOME PAGE</button>
         <button onclick="document.location='admin.html'">Admin Page</button>
-        <button onclick="document.location='API-admin.html'">API-Admin Page</button>
+        <button onclick="document.location='API-admin.html'">API-Admin</button>
         <script>
             const src = "https://bowenxue.net/COMP351/Term_Project"
             window.onload=main();
@@ -20,12 +20,25 @@
             }
             function getUserContents(){
                 const xhttp = new XMLHttpRequest();
-                xhttp.open("GET",src+"/API/v1/reader-quotes/",true);
+                xhttp.open("GET",src+"/API/v1/quotes/",true);
                 xhttp.send();
                 xhttp.onreadystatechange = function(){
                     if(this.readyState == 4 && this.status == 200){
+                        let data = JSON.parse(this.responseText);   
+                        let keys = Object.keys(data);
+                        for (let i=0;i<keys.length;i++){
+                            let cdiv = document.createElement('div');
+                            cdiv.id = "userDiv"+ data[i].questionID;
+                            cdiv.className = "quoteDiv";
+                            let ctextare = document.createElement('textarea');
+                            ctextare.innerHTML = data[i].content;
+                            ctextare.readOnly = true;
+                            let chr = document.createElement('hr');
+                            document.getElementById("start1").appendChild(cdiv);
+                            document.getElementById(cdiv.id).appendChild(ctextare);
+                            document.getElementById(cdiv.id).appendChild(chr);
+                        }
                         
-                        document.getElementById('start1').innerHTML=(this.responseText) ;
                         
                         
                     }

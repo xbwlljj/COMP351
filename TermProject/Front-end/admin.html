@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>admin</title>
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+        <h1>Quote Admin Page</h1>
+        <div id="start1"></div>
+            
+        <button class="add" onclick="addEmptyOne()">Add new quote</button><br><br>
+        <div><button onclick="document.location='index.html'">HOME PAGE</button>
+        <button onclick="document.location='reader.html'">Reader Page</button>
+        <button onclick="document.location='API-admin.html'">API-Admin</button></div>
+        <script>
+            var src = "https://bowenxue.net/COMP351/Term_Project";
+           
+            
+            function main(){
+                getContents();                
+            }
+
+            function getContents(){
+                const xhttp = new XMLHttpRequest();
+                xhttp.open("GET", src + "/API/v1/quotes/",true);
+                xhttp.send();
+                xhttp.onreadystatechange = function(){
+                    if(this.readyState == 4 && this.status == 200){
+                        let data = JSON.parse(this.responseText);   
+                        let keys = Object.keys(data);
+                        for (let i=0;i<keys.length;i++){
+                            let cdiv = document.createElement('div');
+                            cdiv.id= "div" + data[i].questionID;                            
+                            let ctextare = document.createElement("textarea");
+                            ctextare.id =  data[i].questionID;
+                            ctextare.innerHTML = data[i].content;
+                            let cbr = document.createElement('br');
+                            let saveButton = document.createElement('button');
+                            saveButton.textContent = "Save";
+                            saveButton.className = "save"
+                            saveButton.setAttribute("onclick","save("+data[i].questionID + ")")
+                            let deleteButton = document.createElement('button');
+                            deleteButton.textContent="Delete";
+                            deleteButton.className="delete";
+                            deleteButton.setAttribute("onclick","deleteOne("+data[i].questionID +")")
+                            let chr = document.createElement('hr');
+                            document.getElementById('start1').appendChild(cdiv)
+                            document.getElementById(cdiv.id).appendChild(ctextare);
+                            document.getElementById(cdiv.id).appendChild(cbr);
+                            document.getElementById(cdiv.id).appendChild(saveButton);
+                            document.getElementById(cdiv.id).appendChild(deleteButton);
+                            document.getElementById(cdiv.id).appendChild(chr);
+                        }                       
+                    }
+                };
+               
+            };
+
+            function save(i){
+                let questionID = i;
+                let qInput = document.getElementById(i).value;     
+                                                   
+                let data = JSON.stringify({questionID:i,content:qInput});   
+                console.log(data);                  
+                updateOneData(data,i);
+            }            
+            
+            function updateOneData(data,i){                
+                const xhttp = new XMLHttpRequest();
+                xhttp.open("PUT",src+"/API/v1/quotes/"+i,true);     
+                xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded")           
+                xhttp.send(data);
+                xhttp.onreadystatechange = function(){                    
+                    if(this.readyState == 4 && this.status == 200){                        
+                        //document.getElementById("demo1").innerHTML = this.responseText;
+                    }                    
+                };
+            }
+
+            function addEmptyOne(){
+                const xhttp = new XMLHttpRequest();
+                xhttp.open("POST",src + "/API/v1/quotes",true);     
+                xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded")           
+                xhttp.send();
+                xhttp.onreadystatechange = function(){                    
+                    if(this.readyState == 4 && this.status == 201){                        
+                       location.reload();
+                    }                    
+                };                
+            };
+            
+            function deleteOne(i){                
+                let data = JSON.stringify({questionID:i});
+                const xhttp = new XMLHttpRequest();
+                xhttp.open("DELETE",src + "/API/v1/quotes/"+i,true);     
+                xhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded")           
+                xhttp.send();
+                xhttp.onreadystatechange = function(){                    
+                    if(this.readyState == 4 && this.status == 200){  
+                        location.reload();
+                    }                    
+                };                
+            };
+            window.onload=main();
+        </script>
+    </body>
+</html>
